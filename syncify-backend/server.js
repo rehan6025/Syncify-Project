@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 
 const app =  express();
-const spotifyRouter = require('./routes/spotify')
+const spotifyRouter = require('./auth/spotify')
 
 
 
