@@ -1,20 +1,30 @@
 const express = require('express')
 const router = new express.Router();
 const axios = require('axios')
-const queryString = require('query-string')
-const {getPlaylists , getTracks} = require('../services/spotify')
+const queryString = require('querystring')
+const { getPlaylists, getTracks } = require('../services/spotify')
 
 
 
 router.get('/', (req, res) => {
+    
+    // FIRST clear any existing cookies
+    res.clearCookie('spotify_access_token');
+    res.clearCookie('spotify_refresh_token');
+    res.clearCookie('spotify_token_expiry');
+    
+    
+    
     //determine permission which our app can access
     const scopes = 'playlist-read-private'
-
+    
     //after login user will be redirected here with code
     const redirectURI = encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI)
-
-
+    
+    
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${redirectURI}&scope=${scopes}`;
+    
+    console.log('Redirecting to Spotify auth:',authUrl );
 
     res.redirect(authUrl);
 })
@@ -50,7 +60,7 @@ const getSpotifyTokens = async (code) => {
 
     } catch (error) {
         console.log('Error getting spotify tokens:', error);
-
+        throw error;
     }
 }
 
@@ -61,38 +71,61 @@ router.get('/callback', async (req, res) => {
     try {
         const { code } = req.query;
 
-        const { access_token, refresh_token } = await getSpotifyTokens(code);
+        const { access_token, refresh_token, expires_in } = await getSpotifyTokens(code);
 
         //set secure http only token
         res.cookie('spotify_access_token', access_token, { httpOnly: true, secure: true })
         res.cookie('spotify_refresh_token', refresh_token, { httpOnly: true, secure: true })
-        res.cookie('spotify_token_expiry', Date.now() + expires_in, { httpOnly: false, secure:true})
+        res.cookie('spotify_token_expiry', Date.now() + expires_in, { httpOnly: false, secure: true })
 
-        res.redirect('/dashboard')
+        res.redirect('http://localhost:5173/dashboard');
     } catch (error) {
         console.log('spotify :: callback error ::', error);
-        
+
     }
 })
 
 
-router.get('/playlists',async (req,res)=>{
+router.get('/logout', (req, res) => {
+    console.log('logout route hit');
+
+    // 1. Clear all cookies
+    res.clearCookie('spotify_access_token', { path: '/' });
+    res.clearCookie('spotify_refresh_token', { path: '/' });
+    res.clearCookie('spotify_token_expiry', { path: '/' });
+
+    res.send(`
+        <html>
+          <body>
+            <h2 style="text-align: center; margin-top: 50px;">Logging you out from Spotify...</h2>
+      
+            <script>
+              // Step 1: Log out from Spotify, then redirect back to our login page
+              window.location.href = "https://accounts.spotify.com/en/logout?continue=http://localhost:5173/login?force=true";
+            </script>
+          </body>
+        </html>
+      `);
+});
+
+
+router.get('/playlists', async (req, res) => {
     try {
         const accessToken = req.cookies.spotify_access_token;
         const playlists = await getPlaylists(accessToken);
         res.json(playlists)
     } catch (error) {
-        res.status(500).json({error:'Failed to fetch playlists'})
+        res.status(500).json({ error: 'Failed to fetch playlists' })
     }
 })
 
-router.get('/tracks/:playlistId', async (req,res) => {
+router.get('/tracks/:playlistId', async (req, res) => {
     try {
         const accessToken = req.cookies.spotify_access_token;
         const tracks = await getTracks(req.params.playlistId, accessToken);
-        res.json(tracks);      
+        res.json(tracks);
     } catch (error) {
-        res.status(500).json({error:'Failed to fetch tracks'})
+        res.status(500).json({ error: 'Failed to fetch tracks' })
     }
 })
 
