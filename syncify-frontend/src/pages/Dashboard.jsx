@@ -5,9 +5,6 @@ function Dashboard() {
 
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    window.location.href = 'http://localhost:3000/auth/spotify/logout';
-  };
 
   const logoutFromSpotify = async() => {
 
