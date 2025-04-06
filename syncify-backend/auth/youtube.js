@@ -57,6 +57,123 @@ router.get('/callback' , async (req,res) => {
 })
 
 
+router.get('/user', async (req,res) => {
+    try {
+        const youtube = google.youtube('v3');
+        const people = google.people('v1');
+
+        //get youtube channel info 
+        const channelResponse = await youtube.channels.list({
+            auth :  oauth2Client,
+            part : 'snippet',
+            mine :  true
+        })
+
+        const profileResponse = await people.people.get({
+            auth:  oauth2Client,
+            resourceName: 'people/me',
+            personFields: 'names,emailAddresses,photos'
+        });
+
+        res.json({
+            channel:channelResponse.data.items[0],
+            profile:profileResponse.data
+        })
+
+
+
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).json({ error: 'Failed to fetch user data' });
+    }
+})
+
+router.post('/playlists', async (req,res) => {
+    try {
+        const {title, description} = req.body;
+        const youtube = google.youtube('v3')
+
+        const response = await youtube.playlists.insert({
+            auth: oauth2Client,
+            part: 'snippet,status',
+            requestBody: {
+                snippet: {
+                    title: title,
+                    description: description || 'Created via Syncify'
+                },
+                status: {
+                    privacyStatus: 'private'
+                }
+            }
+        });
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error creating playlist:', error);
+        res.status(500).json({ error: 'Failed to create playlist' });
+    }
+})
+
+router.post('/playlists/:playlistsId/items', async (req,res) => {
+    try {
+        const {playlistId} = req.params;
+        const {videoId} = req.body;
+        const youtube = google.youtube('v3')
+
+        const response = await youtube.playlistItems.insert({
+            auth: oauth2Client,
+            part: 'snippet',
+            requestBody: {
+                snippet: {
+                    playlistId: playlistId,
+                    resourceId: {
+                        kind:'youtube#video',
+                        videoId: videoId
+                    }
+                }
+            }
+        })
+
+        res.json(response.data)
+
+
+    } catch (error) {   
+        
+        console.error('Error adding video:' , error);
+        res.status(500).json({error : 'Failed to add video'})
+
+    }    
+})
+
+router.get('/search', async (req, res) => {
+    try {
+        const {q} = req.query;
+        const youtube = google.youtube('v3');
+
+        const response = await youtube.search.list({
+            auth : oauth2Client,
+            part : 'snippet',
+            q: `${q} official music video`,
+            type: 'video',
+            maxResults: 1
+        });
+
+        if(response.data.items.length > 0){
+            const video = response.data.items[0];
+            res.json({
+                videoId: video.id.videoId,
+                title: video.snippet.title,
+                thumbnail: video.snippet.thumbnails.default.url
+            });
+        }else{
+            res.status(404).json({error : "No video found"})
+        }
+    } catch (error) {
+        console.error('search error:', error)
+        res.status(500).json({error:'search failed'});
+    }
+});
+
 
 
 

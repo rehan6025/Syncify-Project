@@ -12,7 +12,7 @@ app.use(cors({
     credentials: true
 }));
 app.use('/auth/spotify', spotifyRouter)
-app.use('/auth/youtube',)
+// app.use('/auth/youtube', youtubeRouter)
 
 
 app.listen(3000, () => {
