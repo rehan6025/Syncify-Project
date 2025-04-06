@@ -3,6 +3,7 @@ const axios = require('axios')
 const router = new express.Router();
 const querystring = require('querystring');
 const {google} = require('googleapis')
+const cookieParser = require('cookie-parser')
 
 const oauth2Client = new google.auth.OAuth2(
     process.env.YT_CLIENT_ID,
@@ -11,10 +12,11 @@ const oauth2Client = new google.auth.OAuth2(
 )
 
 
-
+router.use(cookieParser())
 
 router.get('/' , (req, res)=>{
     const scopes = [
+        "https://www.googleapis.com/auth/youtube",
         "https://www.googleapis.com/auth/youtube.readonly",
         "https://www.googleapis.com/auth/userinfo.profile"
     ]
@@ -57,6 +59,18 @@ router.get('/callback' , async (req,res) => {
 })
 
 
+//MIDDLEWARE TO CHECK CREDENTIALS
+router.use((req, res, next)=>{
+    if(req.cookies.yt_access_token){
+        oauth2Client.setCredentials({
+            access_token:req.cookies.yt_access_token,
+            refresh_token:req.cookies.yt_refresh_token
+        })
+    }
+    next();
+})
+
+
 router.get('/user', async (req,res) => {
     try {
         const youtube = google.youtube('v3');
@@ -90,6 +104,11 @@ router.get('/user', async (req,res) => {
 
 router.post('/playlists', async (req,res) => {
     try {
+
+        if (!oauth2Client.credentials) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
         const {title, description} = req.body;
         const youtube = google.youtube('v3')
 
@@ -114,7 +133,7 @@ router.post('/playlists', async (req,res) => {
     }
 })
 
-router.post('/playlists/:playlistsId/items', async (req,res) => {
+router.post('/playlists/:playlistId/items', async (req,res) => {
     try {
         const {playlistId} = req.params;
         const {videoId} = req.body;

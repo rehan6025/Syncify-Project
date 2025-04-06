@@ -19,6 +19,10 @@ export default function Login() {
     }
   }, [searchParams]);
 
+  const handleYtLogin = () => {
+    window.location.href = 'http://localhost:3000/auth/youtube'
+  }
+
   const handleLogin = () => {
     // Add timestamp to prevent caching
     window.location.href = `http://localhost:3000/auth/spotify?ts=${Date.now()}`;
@@ -27,6 +31,7 @@ export default function Login() {
   return (
     <div>
       <button onClick={handleLogin}>Login with Spotify</button>
+      <button onClick={handleYtLogin}>Login with Youtube</button>
     </div>
   );
 }

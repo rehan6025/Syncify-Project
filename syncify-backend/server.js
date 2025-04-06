@@ -6,13 +6,14 @@ const spotifyRouter = require('./auth/spotify')
 const youtubeRouter = require('./auth/youtube')
 
 
-
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
 }));
 app.use('/auth/spotify', spotifyRouter)
-// app.use('/auth/youtube', youtubeRouter)
+app.use('/auth/youtube', youtubeRouter)
 
 
 app.listen(3000, () => {

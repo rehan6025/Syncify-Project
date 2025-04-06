@@ -76,7 +76,7 @@ router.get('/callback', async (req, res) => {
         //set secure http only token
         res.cookie('spotify_access_token', access_token, { httpOnly: true, secure: true })
         res.cookie('spotify_refresh_token', refresh_token, { httpOnly: true, secure: true })
-        res.cookie('spotify_token_expiry', Date.now() + expires_in, { httpOnly: false, secure: true })
+        res.cookie('spotify_token_expiry', Date.now() + (expires_in * 1000), { httpOnly: false, secure: true })
 
         res.redirect('http://localhost:5173/dashboard');
     } catch (error) {
