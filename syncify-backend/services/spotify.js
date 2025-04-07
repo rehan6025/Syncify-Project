@@ -36,7 +36,7 @@ exports.getTracks = async (playlistId, accessToken) => {
     return res.data.items.map(item => ({
         id: item.track.id,
         name: item.track.name,
-        artist: item.track.artist[0].name,
+        artists: item.track.artists,
         duration: item.track.duration_ms
     }))
 }
