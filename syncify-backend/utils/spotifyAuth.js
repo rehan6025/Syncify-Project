@@ -51,3 +51,7 @@ const spotifyAuthMiddleware = async (req,res,next) => {
         res.status(401).json({error:'Authentication required'})
     }
 }
+
+module.exports = {
+    refreshSpotifyToken , spotifyAuthMiddleware
+}

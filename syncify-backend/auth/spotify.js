@@ -3,6 +3,7 @@ const router = new express.Router();
 const axios = require('axios')
 const queryString = require('querystring')
 const { getPlaylists, getTracks } = require('../services/spotify')
+const { refreshSpotifyToken , spotifyAuthMiddleware } = require('../utils/spotifyAuth');
 
 
 
@@ -109,9 +110,9 @@ router.get('/logout', (req, res) => {
 });
 
 
-router.get('/playlists', async (req, res) => {
+router.get('/playlists',spotifyAuthMiddleware, async (req, res) => {
     try {
-        const accessToken = req.cookies.spotify_access_token;
+        const accessToken = req.accessToken;
         const playlists = await getPlaylists(accessToken);
         res.json(playlists)
     } catch (error) {
@@ -119,9 +120,9 @@ router.get('/playlists', async (req, res) => {
     }
 })
 
-router.get('/tracks/:playlistId', async (req, res) => {
+router.get('/tracks/:playlistId', spotifyAuthMiddleware ,async (req, res) => {
     try {
-        const accessToken = req.cookies.spotify_access_token;
+        const accessToken = req.accessToken;
         const tracks = await getTracks(req.params.playlistId, accessToken);
         res.json(tracks);
     } catch (error) {

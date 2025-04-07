@@ -4,6 +4,7 @@ const router = new express.Router();
 const querystring = require('querystring');
 const {google} = require('googleapis')
 const cookieParser = require('cookie-parser')
+const {youtubeAuthMiddleware, refreshYoutubeToken} = require('../utils/youtubeAuth')
 
 const oauth2Client = new google.auth.OAuth2(
     process.env.YT_CLIENT_ID,
@@ -59,32 +60,23 @@ router.get('/callback' , async (req,res) => {
 })
 
 
-//MIDDLEWARE TO CHECK CREDENTIALS
-router.use((req, res, next)=>{
-    if(req.cookies.yt_access_token){
-        oauth2Client.setCredentials({
-            access_token:req.cookies.yt_access_token,
-            refresh_token:req.cookies.yt_refresh_token
-        })
-    }
-    next();
-})
 
 
-router.get('/user', async (req,res) => {
+
+router.get('/user',youtubeAuthMiddleware, async (req,res) => {
     try {
         const youtube = google.youtube('v3');
         const people = google.people('v1');
 
         //get youtube channel info 
         const channelResponse = await youtube.channels.list({
-            auth :  oauth2Client,
+            auth :  req.youtubeClient,
             part : 'snippet',
             mine :  true
         })
 
         const profileResponse = await people.people.get({
-            auth:  oauth2Client,
+            auth:  req.youtubeClient,
             resourceName: 'people/me',
             personFields: 'names,emailAddresses,photos'
         });
@@ -102,7 +94,7 @@ router.get('/user', async (req,res) => {
     }
 })
 
-router.post('/playlists', async (req,res) => {
+router.post('/playlists',youtubeAuthMiddleware, async (req,res) => {
     try {
 
         if (!oauth2Client.credentials) {
@@ -113,7 +105,7 @@ router.post('/playlists', async (req,res) => {
         const youtube = google.youtube('v3')
 
         const response = await youtube.playlists.insert({
-            auth: oauth2Client,
+            auth: req.youtubeClient,
             part: 'snippet,status',
             requestBody: {
                 snippet: {
@@ -133,14 +125,14 @@ router.post('/playlists', async (req,res) => {
     }
 })
 
-router.post('/playlists/:playlistId/items', async (req,res) => {
+router.post('/playlists/:playlistId/items',youtubeAuthMiddleware, async (req,res) => {
     try {
         const {playlistId} = req.params;
         const {videoId} = req.body;
         const youtube = google.youtube('v3')
 
         const response = await youtube.playlistItems.insert({
-            auth: oauth2Client,
+            auth: req.youtubeClient,
             part: 'snippet',
             requestBody: {
                 snippet: {
@@ -164,13 +156,13 @@ router.post('/playlists/:playlistId/items', async (req,res) => {
     }    
 })
 
-router.get('/search', async (req, res) => {
+router.get('/search',youtubeAuthMiddleware, async (req, res) => {
     try {
         const {q} = req.query;
         const youtube = google.youtube('v3');
 
         const response = await youtube.search.list({
-            auth : oauth2Client,
+            auth : req.youtubeClient,
             part : 'snippet',
             q: `${q} official music video`,
             type: 'video',
