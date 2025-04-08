@@ -215,5 +215,51 @@ router.post('/match', youtubeAuthMiddleware, async (req, res) => {
 })
 
 
+router.post('/batch-match' , youtubeAuthMiddleware, async (req,res) => {
+    try {
+        const {spotifyTracks} = req.body;
+
+        if(!Array.isArray(spotifyTracks)) {
+            return res.status(400).json({error: 'invalid tracks array:: youtube auth'});
+        }
+
+        const matcher = new YouTubeMatcher(req.youtubeClient);
+        const results = [];
+        const errors = [];
+
+        //processing each track 
+        for(const track of spotifyTracks){
+            try {
+                const match = matcher.matchSpotifyTrack(track)
+                if(match) {
+                    results.push({
+                        spotifyId:track.id,
+                        youtubeId: match.id.videoId,
+                        title: track.name,
+                        artist: track.artists[0].name
+                    })
+                }
+            } catch (error) {
+                errors.push({
+                    track: track.name,
+                    error: error.message
+                });
+            }
+        }
+
+        res.json({
+            matched:results.length,
+            failed:errors.length,
+            results,
+            errors
+        });
+
+    } catch (error) {
+        console.error('Batch match error:: youtube auth:: ',error);
+        res.status(500).json({error:'Batch matching failed'});
+    }
+    
+})
+
 
 module.exports = router
