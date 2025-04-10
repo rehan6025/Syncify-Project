@@ -1,7 +1,7 @@
 const express = require('express')
 const axios = require('axios')
-const router = new express.Router();
-const querystring = require('querystring');
+const router = new express.Router()
+const querystring = require('querystring')
 const { google } = require('googleapis')
 const cookieParser = require('cookie-parser')
 const { youtubeAuthMiddleware, refreshYoutubeToken } = require('../utils/youtubeAuth')
@@ -12,7 +12,6 @@ const oauth2Client = new google.auth.OAuth2(
     process.env.YT_CLIENT_SECRET,
     process.env.YT_REDIRECT_URI
 )
-
 
 router.use(cookieParser())
 
@@ -59,9 +58,6 @@ router.get('/callback', async (req, res) => {
         res.redirect('/login?error=youtube_auth')
     }
 })
-
-
-
 
 
 router.get('/user', youtubeAuthMiddleware, async (req, res) => {
@@ -258,7 +254,7 @@ router.post('/batch-match' , youtubeAuthMiddleware, async (req,res) => {
         console.error('Batch match error:: youtube auth:: ',error);
         res.status(500).json({error:'Batch matching failed'});
     }
-    
+
 })
 
 

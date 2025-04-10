@@ -104,7 +104,7 @@ class YoutubeMatcher {
 
             return {
                 video , 
-                score: (titleScore*0.7) + (durationScore*0.3);
+                score: (titleScore*0.7) + (durationScore*0.3)
             }
         })
         scoredResults.sort((a,b)=> b.score - a.score);
