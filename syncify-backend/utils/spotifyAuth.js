@@ -44,11 +44,13 @@ const spotifyAuthMiddleware = async (req,res,next) => {
             res.cookie('spotify_access_token',access_token,{httpOnly:true , secure: true});
             res.cookie('spotify_token_expiry', Date.now() + (newTokens.expires_in * 1000), { httpOnly: false, secure: true })
         }
-        req.spotifyAccessToken = access_token
+        req.accessToken = access_token
         next();
 
     } catch (error) {
         res.status(401).json({error:'Authentication required'})
+        console.log(error);
+        
     }
 }
 

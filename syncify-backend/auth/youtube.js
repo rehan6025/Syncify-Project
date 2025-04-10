@@ -185,10 +185,10 @@ router.get('/search', youtubeAuthMiddleware, async (req, res) => {
 
 router.post('/match', youtubeAuthMiddleware, async (req, res) => {
     try {
-        const { spotifyTrack } = req.body;
-
+        const spotifyTrack = req.body;
+        
         if (!spotifyTrack || !spotifyTrack.name || !spotifyTrack.artists) {
-            return res.status(404).json({ error: 'Invalid spotify track data' })
+            return res.status(404).json({ error: 'Invalid spotify track data in /match' })
         }
 
         const matcher = new YouTubeMatcher(req.youtubeClient);

@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-exports.getPlaylist = async (accessToken) => {
+exports.getPlaylists = async (accessToken) => {
     try {
         let playlists = []
         let url = 'https://api.spotify.com/v1/me/playlists?limit=50';

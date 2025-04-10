@@ -117,6 +117,7 @@ router.get('/playlists',spotifyAuthMiddleware, async (req, res) => {
         res.json(playlists)
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch playlists' })
+        console.log(error);
     }
 })
 
@@ -127,6 +128,8 @@ router.get('/tracks/:playlistId', spotifyAuthMiddleware ,async (req, res) => {
         res.json(tracks);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch tracks' })
+        console.log(error);
+        
     }
 })
 
