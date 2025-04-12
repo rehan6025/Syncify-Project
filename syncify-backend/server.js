@@ -6,6 +6,7 @@ const app = express();
 app.use(cookieParser());
 const spotifyRouter = require('./auth/spotify')
 const youtubeRouter = require('./auth/youtube')
+const logoutRouter = require('./auth/logout')
 
 
 app.use(express.json());
@@ -16,6 +17,13 @@ app.use(cors({
 }));
 app.use('/auth/spotify', spotifyRouter)
 app.use('/auth/youtube', youtubeRouter)
+app.use('/auth/logout' , logoutRouter)
+app.use('/auth/status' , (req,res)=>{
+    const spotifyConnected = !!req.cookies.spotify_access_token
+    const youtubeConnected = !!req.cookies.yt_access_token
+
+    res.json({spotifyConnected , youtubeConnected});
+})
 
 
 app.listen(3000, () => {

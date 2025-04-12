@@ -51,13 +51,14 @@ router.get('/callback', async (req, res) => {
             secure: true,
         });
 
-        res.redirect('http://localhost:5173/dashboard')
+        res.redirect('http://localhost:5173/profile')
 
     } catch (error) {
         console.error('YouTube auth error:', error);
         res.redirect('/login?error=youtube_auth')
     }
 })
+
 
 
 router.get('/user', youtubeAuthMiddleware, async (req, res) => {

@@ -5,7 +5,6 @@ function Dashboard() {
 
   const navigate = useNavigate();
 
-
   const logoutFromSpotify = async() => {
 
     await fetch("http://localhost:3000/auth/logout", {
