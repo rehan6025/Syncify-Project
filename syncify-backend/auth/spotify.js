@@ -115,6 +115,7 @@ router.get('/playlists',spotifyAuthMiddleware, async (req, res) => {
         const accessToken = req.accessToken;
         const playlists = await getPlaylists(accessToken);
         res.json(playlists)
+        
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch playlists' })
         console.log(error);

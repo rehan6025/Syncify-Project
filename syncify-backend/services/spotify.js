@@ -23,7 +23,7 @@ exports.getPlaylists = async (accessToken) => {
         return playlists;
     } catch (error) {
         console.error('Failed to fetch playlists:', error);
-        
+        throw error;
     }
 }
 
