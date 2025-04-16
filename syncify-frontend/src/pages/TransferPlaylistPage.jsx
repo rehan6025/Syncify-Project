@@ -12,6 +12,7 @@ function TransferPlaylistPage() {
             const res = await fetch('http://localhost:3000/auth/spotify/playlists', {
                 credentials: "include"
             });
+            
             const data = await res.json();
 
             const selected = data.find(p => (p.id === playlistId));
