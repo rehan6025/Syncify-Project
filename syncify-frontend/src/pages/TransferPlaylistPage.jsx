@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-
+//using fetches to transfer playlists
 function TransferPlaylistPage() {
     const { playlistId } = useParams();
     const [playlist, setPlaylist] = useState(null);
