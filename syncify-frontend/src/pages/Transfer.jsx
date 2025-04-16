@@ -9,7 +9,7 @@ function Transfer() {
   const spotifyConnected = useSelector(state => state.auth.spotifyConnected);
   const youtubeConnected = useSelector(state => state.auth.youtubeConnected);
   const [playlists, setPlaylists] = useState([]);
-
+ 
   useEffect(() => {
     if (!spotifyConnected || !youtubeConnected) {
       alert('Please connect both Spotify and Youtube to start transfer!');
@@ -31,9 +31,11 @@ function Transfer() {
     }
 
     fetchPlaylists();
-
-
   }, [])
+
+  const handleSelect = (playlistId)=>{
+    navigate(`/transfer/${playlistId}`);
+  }
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
@@ -47,7 +49,7 @@ function Transfer() {
           <PlaylistCard 
             key={playlist.id}
             playlist={playlist}
-            onSelect={() => handleTransfer(playlist.id)}
+            onSelect={() => handleSelect(playlist.id)}
           />
         ))}
       </div>

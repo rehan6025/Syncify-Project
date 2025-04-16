@@ -94,7 +94,7 @@ router.get('/user', youtubeAuthMiddleware, async (req, res) => {
 
 router.post('/playlists', youtubeAuthMiddleware, async (req, res) => {
     try {
-
+        
         if (!oauth2Client.credentials) {
             return res.status(401).json({ error: 'Not authenticated' });
         }
@@ -227,7 +227,7 @@ router.post('/batch-match' , youtubeAuthMiddleware, async (req,res) => {
         //processing each track 
         for(const track of spotifyTracks){
             try {
-                const match = matcher.matchSpotifyTrack(track)
+                const match = await matcher.matchSpotifyTrack(track)
                 if(match) {
                     results.push({
                         spotifyId:track.id,

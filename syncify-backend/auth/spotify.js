@@ -24,8 +24,6 @@ router.get('/', (req, res) => {
     
     
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${redirectURI}&scope=${scopes}`;
-    
-    console.log('Redirecting to Spotify auth:',authUrl );
 
     res.redirect(authUrl);
 })
