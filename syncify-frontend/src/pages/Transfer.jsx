@@ -16,7 +16,7 @@ function Transfer() {
       navigate('/profile')
     }
 
-  }, [spotifyConnected, youtubeConnected]);
+  }, [spotifyConnected, youtubeConnected , navigate]);
 
 
 

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 function TransferPlaylistPage() {
     const { playlistId } = useParams();
     const [playlist, setPlaylist] = useState(null);
+    const [playlistUrl , setPlaylistUrl] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -12,7 +13,7 @@ function TransferPlaylistPage() {
             const res = await fetch('http://localhost:3000/auth/spotify/playlists', {
                 credentials: "include"
             });
-            
+
             const data = await res.json();
 
             const selected = data.find(p => (p.id === playlistId));
@@ -56,7 +57,18 @@ function TransferPlaylistPage() {
             body: JSON.stringify({ title: "SyncifyTransferPlaylist" })
         })
         const playlistData = await createPlaylist.json();
-        
+
+        //Getting youtube playlist link 
+        if (playlistData?.id) {
+            setPlaylistUrl( `https://www.youtube.com/playlist?list=${playlistData.id}` );
+            console.log('New playlist URL will be set');
+        } else {
+            console.error('Failed to get playlist ID:', playlistData);
+        }
+
+        //https://www.youtube.com/playlist?list=PLBHubnbSvTmQami9Sr8Mb5Rg5stZJ2e_u
+
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         for (const video of videos) {
             const add = await fetch(`http://localhost:3000/auth/youtube/playlists/${playlistData.id}/items`, {
@@ -65,9 +77,10 @@ function TransferPlaylistPage() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ videoId : video.youtubeId })
+                body: JSON.stringify({ videoId: video.youtubeId })
             })
 
+            await wait(300);
         }
 
     };
@@ -77,7 +90,7 @@ function TransferPlaylistPage() {
 
     return (
         <div className='p-6 max-w-xl mx-auto text-center'>
-            <img src={playlist.image} alt={playlist.name} className='w-full h-64 object-cover rounded' />
+            <img src={playlist.images[0].url} alt={playlist.name} className='w-full h-64 object-cover rounded' />
             <h1 className='text-3xl font-bold mt-4'>{playlist.name}</h1>
             <p className="text-gray-600 mb-4">{playlist.description}</p>
 
@@ -87,6 +100,15 @@ function TransferPlaylistPage() {
             >
                 Transfer to Youtube
             </button>
+
+            {playlistUrl && (
+                <a href={playlistUrl}
+                    target='_blank'
+                    className="mt-4 inline-block px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-lg rounded"
+                >
+                    Open Playlist
+                </a>
+            )}
         </div>
     )
 }
