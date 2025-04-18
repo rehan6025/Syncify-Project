@@ -9,7 +9,7 @@ function Home() {
     <div className="min-h-screen flex flex-col">
       {/* Hero Section - Clean gradient background with focused content */}
       <header className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4">  
           {/* Main headline and intro text */}
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h1 className="text-4xl font-bold mb-4">

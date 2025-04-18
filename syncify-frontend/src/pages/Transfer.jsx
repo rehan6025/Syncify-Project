@@ -38,7 +38,7 @@ function Transfer() {
   }
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className="p-4 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800">Transfer Playlists</h1>
       <p className="text-gray-600 mb-6">
         Select a playlist to transfer to YouTube
