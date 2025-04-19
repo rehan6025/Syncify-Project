@@ -43,21 +43,20 @@ function TransferPlaylistPage() {
         })
 
         const response = await transferRes.json();
-        alert("transfer complete");
         console.log(response);
-
+        
         const videos = response.results;
-
+        
         const createPlaylist = await fetch('http://localhost:3000/auth/youtube/playlists', {
             method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title: "SyncifyTransferPlaylist" })
+            body: JSON.stringify({ title: `${playlist.name} - Syncify` })
         })
         const playlistData = await createPlaylist.json();
-
+        
         //Getting youtube playlist link 
         if (playlistData?.id) {
             setPlaylistUrl( `https://www.youtube.com/playlist?list=${playlistData.id}` );
@@ -65,11 +64,11 @@ function TransferPlaylistPage() {
         } else {
             console.error('Failed to get playlist ID:', playlistData);
         }
-
+        
         //https://www.youtube.com/playlist?list=PLBHubnbSvTmQami9Sr8Mb5Rg5stZJ2e_u
-
+        
         const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
+        
         for (const video of videos) {
             const add = await fetch(`http://localhost:3000/auth/youtube/playlists/${playlistData.id}/items`, {
                 method: 'POST',
@@ -79,10 +78,11 @@ function TransferPlaylistPage() {
                 },
                 body: JSON.stringify({ videoId: video.youtubeId })
             })
-
+            
             await wait(300);
         }
-
+        
+        alert("transfer complete");
     };
 
     if (!playlist) return <div>Loading...</div>

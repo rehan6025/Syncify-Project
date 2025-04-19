@@ -69,7 +69,7 @@ function Home() {
           
           <div className="grid md:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow transition-shadow">
+            <div className="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow  transition-shadow">
               <div className="text-3xl mb-3 text-center">⚡</div>
               <h3 className="font-bold text-lg mb-2 text-center">Lightning Fast</h3>
               <p className="text-gray-600 text-center">

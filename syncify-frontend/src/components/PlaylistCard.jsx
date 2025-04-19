@@ -3,7 +3,7 @@ import React from 'react'
 export default function PlaylistCard({ playlist, onSelect }) {
   return (
     <div 
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      className="bg-slate-300 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
       onClick={onSelect}
     >
       <div className="relative pb-3/4">
@@ -14,7 +14,7 @@ export default function PlaylistCard({ playlist, onSelect }) {
             className="w-full h-48 object-cover"
           />
         ) : (
-          <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+          <div className="w-full h-48 bg-gray-10000 flex items-center justify-center">
             <span className="text-gray-500">No Image</span>
           </div>
         )}
