@@ -51,7 +51,7 @@ router.get('/callback', async (req, res) => {
             secure: true,
         });
 
-        res.redirect('http://localhost:5173/profile')
+        res.redirect(`${process.env.FRONTEND_URL}/profile`);
 
     } catch (error) {
         console.error('YouTube auth error:', error);

@@ -77,7 +77,7 @@ router.get('/callback', async (req, res) => {
         res.cookie('spotify_refresh_token', refresh_token, { httpOnly: true, secure: true })
         res.cookie('spotify_token_expiry', Date.now() + (expires_in * 1000), { httpOnly: false, secure: true })
 
-        res.redirect('http://localhost:5173/profile');
+        res.redirect(`${process.env.FRONTEND_URL}/profile`);
     } catch (error) {
         console.log('spotify :: callback error ::', error);
 
@@ -100,7 +100,7 @@ router.get('/logout', (req, res) => {
       
             <script>
               // Step 1: Log out from Spotify, then redirect back to our login page
-              window.location.href = "https://accounts.spotify.com/en/logout?continue=http://localhost:5173/login?force=true";
+              window.location.href = "https://accounts.spotify.com/en/logout?continue=http://${process.env.FRONTEND_URL}/login?force=true";
             </script>
           </body>
         </html>
