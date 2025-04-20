@@ -2,7 +2,6 @@
 import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './components/Login'
-import Dashboard from './pages/Dashboard'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Transfer from './pages/Transfer'
@@ -16,7 +15,6 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path="/" element={<Home/>}/>
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         <Route path="/transfer" element={<Transfer/>} />
         <Route path="/profile" element={<Profile/>} />
         <Route path="/transfer/:playlistId" element={<TransferPlaylistPage/>} />

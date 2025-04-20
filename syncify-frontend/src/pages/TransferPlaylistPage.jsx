@@ -10,7 +10,7 @@ function TransferPlaylistPage() {
 
     useEffect(() => {
         const fetchPlaylist = async () => {
-            const res = await fetch('http://localhost:3000/auth/spotify/playlists', {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/spotify/playlists`, {
                 credentials: "include"
             });
 
@@ -28,12 +28,12 @@ function TransferPlaylistPage() {
     }, [playlistId]);
 
     const handleTransfer = async () => {
-        const res = await fetch(`http://localhost:3000/auth/spotify/tracks/${playlistId}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/spotify/tracks/${playlistId}`, {
             credentials: 'include'
         })
         const data = await res.json();
 
-        const transferRes = await fetch('http://localhost:3000/auth/youtube/batch-match', {
+        const transferRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/youtube/batch-match`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -47,7 +47,7 @@ function TransferPlaylistPage() {
         
         const videos = response.results;
         
-        const createPlaylist = await fetch('http://localhost:3000/auth/youtube/playlists', {
+        const createPlaylist = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/youtube/playlists`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -70,7 +70,7 @@ function TransferPlaylistPage() {
         const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         
         for (const video of videos) {
-            const add = await fetch(`http://localhost:3000/auth/youtube/playlists/${playlistData.id}/items`, {
+            const add = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/youtube/playlists/${playlistData.id}/items`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

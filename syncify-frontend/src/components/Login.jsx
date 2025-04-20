@@ -20,12 +20,12 @@ export default function Login() {
   }, [searchParams]);
 
   const handleYtLogin = () => {
-    window.location.href = 'http://localhost:3000/auth/youtube'
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/youtube`
   }
 
   const handleLogin = () => {
-    // Add timestamp to prevent caching
-    window.location.href = `http://localhost:3000/auth/spotify?ts=${Date.now()}`;
+    // timestamp to prevent caching
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/spotify?ts=${Date.now()}`;
   };
 
   return (
